@@ -29,7 +29,12 @@ const createOrder = ( async (req, res) => {
 const getOrder = async (req, res) => {
     try {
       const order = await Order.all_Models.order_Model.findAll();
-      res.status(200).json(order);
+      const proID = order.productModelId;
+      const products = await Product.all_Models.product_Model.findByPk(proID);
+      console.log(order.productModelId)
+      res.status(200).json({
+        order : order,
+      });
     } catch (error) {
       console.error('Error retrieving orders:', error);
       res.status(500).json({
@@ -44,8 +49,16 @@ const getOrderById = async (req, res) => {
   
     try {
       const order = await Order.all_Models.order_Model.findByPk(orderId);
+      const proID = order.productModelId;
+      const products = await Product.all_Models.product_Model.findByPk(proID);
+      console.log(order.productModelId)
+      
       if (order) {
-        res.status(200).json(order);
+        // res.status(200).json(order);
+        res.status(200).json({
+          order : order,
+          product : products
+        });
       } else {
         res.status(404).json({
           message: "Order not found",
